@@ -55,3 +55,38 @@ def _latest_session(sessions_dir: Path) -> Optional[Path]:
     files.sort(key=lambda p: p.stat().st_mtime)
     return files[-1]
 
+
+async def watch_sessions(cfg, *, stop_event: asyncio.Event) -> AsyncIterator[str]:
+    """Watch the sessions directory and yield new lines from the latest file.
+
+    This mirrors the original behaviour expected by the controller: pick the
+    newest session `.jsonl`, seek to its end, then yield appended lines until a
+    newer session file appears.
+    """
+    sessions_dir = Path(cfg.sessions_dir)
+    sessions_dir.mkdir(parents=True, exist_ok=True)
+
+    latest: Optional[Path] = None
+    fh = None
+    try:
+        while not stop_event.is_set():
+            cand = _latest_session(sessions_dir)
+            if cand and cand != latest:
+                if fh:
+                    fh.close()
+                latest = cand
+                fh = open(latest, "r", encoding="utf-8")
+                fh.seek(0, os.SEEK_END)
+
+            if fh:
+                line = fh.readline()
+                if line:
+                    yield line.rstrip("\n")
+                else:
+                    await asyncio.sleep(getattr(cfg, "poll_interval", 0.25))
+            else:
+                await asyncio.sleep(getattr(cfg, "watch_poll_interval", 1.0))
+    finally:
+        if fh:
+            fh.close()
+
