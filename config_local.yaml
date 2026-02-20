@@ -1,0 +1,27 @@
+# ─────────────────────────────────────────────────────────────────
+# Local test config — use this when OpenClaw is NOT running.
+# Points the watcher at a local ./test_sessions/ folder so the
+# simulator can write fake events there.
+# ─────────────────────────────────────────────────────────────────
+
+wled:
+  host: "192.168.50.142"
+  port: 80
+  base_path: "/json"
+  max_requests_per_sec: 5.0
+  health_check_interval: 30
+  connect_timeout: 5.0
+  read_timeout: 5.0
+
+watcher:
+  sessions_dir: "./test_sessions"   # local folder — no OpenClaw needed
+  poll_interval: 0.25
+  watch_poll_interval: 1.0
+
+state_machine:
+  min_state_duration: 0.4
+  idle_timeout: 10.0               # shorter for testing
+  debounce_window: 0.5
+
+log_level: "DEBUG"
+daemon: true

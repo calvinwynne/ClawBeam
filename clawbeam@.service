@@ -1,0 +1,20 @@
+[Unit]
+Description=ClawBeam — OpenClaw WLED Reactive Lamp Controller
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+ExecStart=/usr/bin/env python -m clawbeam.main --config /etc/clawbeam/config.yaml
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+# Optional hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target

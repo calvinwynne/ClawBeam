@@ -1,0 +1,104 @@
+# ─────────────────────────────────────────────────────────────────
+# OpenClaw → WLED  –  sample configuration
+# ─────────────────────────────────────────────────────────────────
+
+# WLED lamp connection
+wled:
+  host: "192.168.50.142"      # IP or hostname of WLED device
+  port: 80
+  base_path: "/json"
+  max_requests_per_sec: 5.0
+  health_check_interval: 30   # seconds between pings
+  connect_timeout: 5.0
+  read_timeout: 5.0
+
+# Session directory watcher
+watcher:
+  sessions_dir: "~/.openclaw/agents/main/sessions"
+  poll_interval: 0.25         # seconds between tail reads
+  watch_poll_interval: 1.0    # seconds between dir scans
+
+# State machine timing
+state_machine:
+  min_state_duration: 0.5     # anti-flicker guard (seconds)
+  idle_timeout: 30.0          # revert to IDLE after this many seconds
+  debounce_window: 0.5        # suppress duplicate transitions (seconds)
+
+log_level: "INFO"             # DEBUG | INFO | WARNING | ERROR
+daemon: true                  # false = one-shot mode
+
+# ── Per-state WLED effect payloads ──────────────────────────────
+# Each key matches a LampState enum value.  The dict is sent
+# verbatim to POST /json/state.
+#
+# You can also just set  ps: <preset_id>  to recall a saved preset.
+#
+# Uncomment and edit to override the built-in defaults:
+#
+# state_effects:
+#   IDLE:
+#     on: true
+#     bri: 80
+#     seg:
+#       - col: [[0, 60, 180]]
+#         fx: 2           # Breathe
+#         sx: 80
+#         ix: 128
+#
+#   USER_INPUT:
+#     ps: 5               # recall saved preset #5
+#
+#   THINKING:
+#     on: true
+#     bri: 140
+#     seg:
+#       - col: [[130, 0, 200]]
+#         fx: 2
+#         sx: 40
+#         ix: 200
+#
+#   TOOL_CALL:
+#     on: true
+#     bri: 180
+#     seg:
+#       - col: [[0, 200, 200]]
+#         fx: 9           # Scan
+#         sx: 120
+#         ix: 180
+#
+#   TOOL_SUCCESS:
+#     on: true
+#     bri: 220
+#     seg:
+#       - col: [[0, 220, 40]]
+#         fx: 0           # Solid
+#         sx: 0
+#         ix: 255
+#     tt: 3               # fast transition (tenths of sec)
+#
+#   TOOL_ERROR:
+#     on: true
+#     bri: 255
+#     seg:
+#       - col: [[255, 0, 0]]
+#         fx: 1           # Blink
+#         sx: 200
+#         ix: 255
+#
+#   NETWORK_ERROR:
+#     on: true
+#     bri: 200
+#     seg:
+#       - col: [[200, 0, 180]]
+#         fx: 1
+#         sx: 160
+#         ix: 200
+#
+#   HIGH_TOKENS:
+#     on: true
+#     bri: 160
+#     seg:
+#       - col: [[220, 160, 0]]
+#         fx: 2
+#         sx: 60
+#         ix: 180
