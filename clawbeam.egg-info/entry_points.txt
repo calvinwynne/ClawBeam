@@ -1,0 +1,3 @@
+[console_scripts]
+clawbeam = clawbeam.main:cli
+clawbeam-sim = clawbeam.simulator:main

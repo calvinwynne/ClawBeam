@@ -117,6 +117,7 @@ def _default_state_effects() -> Dict[str, Dict[str, Any]]:
 
 # ── YAML loader ────────────────────────────────────────────────────
 
+
 def _merge(base: dict, override: dict) -> dict:
     """Recursively merge *override* into *base* (mutates base)."""
     for key, val in override.items():

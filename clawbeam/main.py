@@ -28,8 +28,6 @@ class Orchestrator:
         self._wled: Optional[WledClient] = None
         self._sm: Optional[StateMachine] = None
 
-    # ── Lifecycle ──────────────────────────────────────────────
-
     async def run(self) -> None:
         """Main entry – runs until interrupted."""
         logging.basicConfig(
@@ -73,8 +71,6 @@ class Orchestrator:
         if self._wled:
             await self._wled.close()
 
-    # ── Callbacks ──────────────────────────────────────────────
-
     async def _on_transition(self, old: LampState, new: LampState) -> None:
         """Called by the state machine on every real transition."""
         logger.info("Lamp: %s → %s", old.value, new.value)
@@ -93,8 +89,6 @@ class Orchestrator:
         return await self._wled.apply_state(payload)
 
 
-# ── Signal handling helpers ────────────────────────────────────────
-
 def _register_signals(stop_event: asyncio.Event) -> None:
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -104,8 +98,6 @@ def _register_signals(stop_event: asyncio.Event) -> None:
             # Windows doesn't support add_signal_handler
             pass
 
-
-# ── CLI entry point ────────────────────────────────────────────────
 
 def cli() -> None:
     """Command-line entry point."""

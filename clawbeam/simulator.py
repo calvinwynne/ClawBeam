@@ -23,63 +23,54 @@ from .config import load_config
 # ── Scripted scenario ──────────────────────────────────────────
 
 SCENARIO: list[dict] = [
-    # User sends a message
     {
         "type": "user",
         "message": {"role": "user", "content": "List all Python files in the project"},
         "delay": 1.0,
         "label": "USER_INPUT → white flash",
     },
-    # Assistant starts thinking
     {
         "type": "assistant",
         "message": {"role": "assistant", "content": "I'll search for Python files in the project directory."},
         "delay": 2.0,
         "label": "THINKING → purple pulse",
     },
-    # Tool call
     {
         "type": "tool_call",
         "message": {"role": "toolCall", "content": "run_in_terminal: find . -name '*.py'"},
         "delay": 3.0,
         "label": "TOOL_CALL → cyan sweep",
     },
-    # Tool success
     {
         "type": "tool_result",
         "message": {"role": "toolResult", "content": "./main.py\n./config.py\n./parser.py"},
         "delay": 1.5,
         "label": "TOOL_SUCCESS → green flash",
     },
-    # Assistant responds
     {
         "type": "assistant",
         "message": {"role": "assistant", "content": "I found 3 Python files in the project."},
         "delay": 2.0,
         "label": "THINKING → purple pulse",
     },
-    # User sends another message
     {
         "type": "user",
         "message": {"role": "user", "content": "Delete the temporary files"},
         "delay": 1.0,
         "label": "USER_INPUT → white flash",
     },
-    # Tool call
     {
         "type": "tool_call",
         "message": {"role": "toolCall", "content": "run_in_terminal: rm -rf /tmp/build"},
         "delay": 2.5,
         "label": "TOOL_CALL → cyan sweep",
     },
-    # Tool error
     {
         "type": "tool_result",
         "message": {"role": "toolResult", "content": "Error: Permission denied - cannot remove /tmp/build"},
         "delay": 2.0,
         "label": "TOOL_ERROR → red blink",
     },
-    # Assistant with high token count
     {
         "type": "assistant",
         "message": {"role": "assistant", "content": "The deletion failed due to permissions. Let me try with elevated privileges..."},
@@ -87,7 +78,6 @@ SCENARIO: list[dict] = [
         "delay": 3.0,
         "label": "HIGH_TOKENS → amber pulse (5500 tokens)",
     },
-    # Another tool call that succeeds
     {
         "type": "tool_call",
         "message": {"role": "toolCall", "content": "run_in_terminal: sudo rm -rf /tmp/build"},
@@ -100,7 +90,6 @@ SCENARIO: list[dict] = [
         "delay": 1.5,
         "label": "TOOL_SUCCESS → green flash",
     },
-    # Final assistant message
     {
         "type": "assistant",
         "message": {"role": "assistant", "content": "Done! The temporary files have been cleaned up."},
@@ -111,7 +100,6 @@ SCENARIO: list[dict] = [
 
 
 def _make_line(entry: dict) -> str:
-    """Build a JSON line from a scenario entry."""
     payload = {
         "type": entry["type"],
         "message": entry["message"],
@@ -128,7 +116,6 @@ def run_scenario(
     loops: int = 1,
     speed: float = 1.0,
 ) -> None:
-    """Write the scripted scenario into a fresh .jsonl file."""
     sessions_dir.mkdir(parents=True, exist_ok=True)
 
     filename = f"sim_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl"

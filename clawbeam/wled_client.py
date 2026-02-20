@@ -56,8 +56,6 @@ class WledClient:
         self._health_task: Optional[asyncio.Task[None]] = None
         self._healthy: bool = True
 
-    # ── Public API ─────────────────────────────────────────────
-
     @property
     def healthy(self) -> bool:
         return self._healthy
@@ -98,8 +96,6 @@ class WledClient:
             except asyncio.CancelledError:
                 pass
         await self._client.aclose()
-
-    # ── Internals ──────────────────────────────────────────────
 
     async def _rate_limit(self) -> None:
         """Enforce max requests/sec with a simple token-bucket approach."""
