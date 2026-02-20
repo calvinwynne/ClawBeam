@@ -46,7 +46,11 @@ clawbeam/
 ### 1. Install
 
 ```bash
-cd Openclaw
+# create and activate a virtualenv (recommended)
+python -m venv .venv
+source .venv/bin/activate   # on PowerShell: \.venv\Scripts\Activate.ps1
+
+# from project root
 pip install -e ".[dev]"
 ```
 

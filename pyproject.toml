@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clawbeam"
+version = "0.1.0"
+description = "OpenClaw → WLED Real-Time Reactive Lamp Controller"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+dependencies = [
+  "httpx>=0.23",
+  "PyYAML>=6.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pytest-asyncio>=0.20"
+]
+
+[project.scripts]
+clawbeam = "clawbeam.main:cli"
+clawbeam-sim = "clawbeam.simulator:main"
