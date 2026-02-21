@@ -41,14 +41,30 @@ def _map_type(type_str: str, message: Dict[str, Any]) -> (EventType, Severity):
     if not type_str:
         return EventType.UNKNOWN, Severity.INFO
 
+    # OpenClaw uses a top-level "type" of "message" with a nested
+    # `message.role` describing the actor. Support both forms.
+    if type_str == "message":
+        role = (message or {}).get("role")
+        if role == "user":
+            return EventType.USER_INPUT, Severity.INFO
+        if role == "assistant":
+            return EventType.ASSISTANT, Severity.INFO
+        if role in ("toolCall", "tool_call"):
+            return EventType.TOOL_CALL, Severity.INFO
+        if role in ("toolResult", "tool_result"):
+            content = (message or {}).get("content", "")
+            if isinstance(content, str) and content.lower().startswith("error"):
+                return EventType.TOOL_RESULT_ERROR, Severity.ERROR
+            return EventType.TOOL_RESULT_SUCCESS, Severity.INFO
+
+    # Legacy / alternate top-level types
     if type_str == "user":
         return EventType.USER_INPUT, Severity.INFO
     if type_str == "assistant":
         return EventType.ASSISTANT, Severity.INFO
-    if type_str == "tool_call":
+    if type_str in ("tool_call", "toolCall"):
         return EventType.TOOL_CALL, Severity.INFO
-    if type_str == "tool_result":
-        # Heuristic: treat messages starting with "Error" (case-insensitive)
+    if type_str in ("tool_result", "toolResult"):
         content = (message or {}).get("content", "")
         if isinstance(content, str) and content.lower().startswith("error"):
             return EventType.TOOL_RESULT_ERROR, Severity.ERROR
